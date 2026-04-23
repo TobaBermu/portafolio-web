@@ -34,19 +34,9 @@
     @keyframes cpulse { 0%,100%{opacity:0.3;transform:scale(1);}50%{opacity:0.7;transform:scale(1.05);} }
     @keyframes relpulse { 0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,0.3);}50%{box-shadow:0 0 0 6px rgba(167,139,250,0);} }
 
-    nav {
-      position:fixed; top:0; left:0; right:0; z-index:100;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:0 5vw; height:64px;
-      border-bottom:1px solid rgba(255,255,255,0.06);
-      background:rgba(3,3,3,0.75); backdrop-filter:blur(24px);
-    }
-    .nav-logo { font-family:var(--serif); font-size:1.1rem; color:#fff; text-decoration:none; }
-    .nav-links { display:flex; gap:2rem; list-style:none; }
-    .nav-links a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:0.79rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; transition:color .2s; }
-    .nav-links a:hover { color:#fff; }
-    .nav-cta { border:1px solid rgba(255,255,255,0.15) !important; border-radius:6px; padding:0.4rem 1.1rem; color:rgba(255,255,255,0.85) !important; transition:all .2s !important; }
-    .nav-cta:hover { border-color:rgba(255,255,255,0.4) !important; color:#fff !important; }
+    /* nav legacy reset — estilos reales en #mainNav */
+    nav { display: block; }
+    .nav-logo { font-family:var(--serif); font-size:1.05rem; color:#fff; text-decoration:none; }
 
     #hero {
       min-height:100vh; display:grid; grid-template-columns:1fr 1fr;
@@ -89,9 +79,22 @@
     .stat-val { font-family:var(--serif); font-size:2.2rem; line-height:1; background:linear-gradient(135deg,#a5b4fc,#fda4af); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .stat-label { font-size:0.7rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; margin-top:0.3rem; }
 
-    .hero-img-wrap { position:relative; z-index:4; display:flex; justify-content:center; align-items:center; animation:fadeSlideUp .9s .3s ease both; }
-    .hero-photo { width:270px; height:330px; object-fit:cover; border-radius:16px; border:1px solid rgba(255,255,255,0.1); position:relative; z-index:1; }
-    .hero-photo-deco { position:absolute; inset:-14px; border-radius:22px; border:1px solid rgba(255,255,255,0.05); z-index:0; }
+    .hero-robot-wrap {
+      position: relative; z-index: 4;
+      display: flex; justify-content: center; align-items: center;
+      animation: fadeSlideUp .9s .3s ease both;
+      width: 100%; min-height: 580px;
+      overflow: hidden;
+    }
+    .hero-robot-wrap iframe {
+      width: 110%;
+      height: 110%;
+      min-height: 620px;
+      border: none;
+      background: transparent;
+      /* desplazar ligeramente para recortar bordes del iframe */
+      margin: -5% -5%;
+    }
     .scroll-line { position:absolute; bottom:2.5rem; left:10vw; z-index:4; display:flex; align-items:center; gap:.75rem; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,0.28); }
     .scroll-line::before { content:''; display:block; width:1px; height:48px; background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.2)); }
 
@@ -173,12 +176,12 @@
 
     @media (max-width:900px) {
       #hero { grid-template-columns:1fr; padding-top:80px; min-height:auto; padding-bottom:60px; }
-      .hero-img-wrap { display:none; }
+      .hero-robot-wrap { display:none !important; }
       .scroll-line { display:none; }
       .about-grid { grid-template-columns:1fr; gap:2.5rem; }
       .projects-grid { grid-template-columns:1fr; }
       .edu-grid { grid-template-columns:1fr 1fr; }
-      .nav-links { display:none; }
+      .nav-links-wrap { display:none !important; }
       section { padding:70px 6vw; }
     }
     @media (max-width:550px) {
@@ -186,6 +189,8 @@
       footer { flex-direction:column; gap:.5rem; text-align:center; }
     }
   </style>
+  <!-- Spline viewer web component -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
 </head>
 <body>
 
@@ -426,9 +431,14 @@
       <div><div class="stat-val">3</div><div class="stat-label">Proyectos</div></div>
     </div>
   </div>
-  <div class="hero-img-wrap">
-    <div class="hero-photo-deco"></div>
-    <img class="hero-photo" src="foto.jpg" alt="Tobías Bermúdez" onerror="this.style.display='none'" />
+  <div class="hero-robot-wrap" id="heroRobotWrap">
+    <iframe
+      src="https://cdn.21st.dev/bundled/1914.html?theme=dark"
+      frameborder="0"
+      scrolling="no"
+      allowtransparency="true"
+      style="width:100%;height:100%;min-height:580px;border:none;background:transparent;overflow:hidden;"
+    ></iframe>
   </div>
   <div class="scroll-line">Scroll</div>
 </section>
@@ -542,10 +552,10 @@
       cursor: pointer;
       border: 1px solid #1a1a1a;
       background: #0a0a0a;
-      background-size: auto 120%;
+      background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
       transition: flex 0.7s cubic-bezier(0.4,0,0.2,1),
-                  background-size 0.7s ease,
                   border-color 0.3s ease,
                   box-shadow 0.4s ease;
       flex: 1 1 0%;
@@ -558,7 +568,6 @@
       opacity: 1;
       transform: translateX(0);
       transition: flex 0.7s cubic-bezier(0.4,0,0.2,1),
-                  background-size 0.7s ease,
                   border-color 0.3s ease,
                   box-shadow 0.4s ease,
                   opacity 0.6s ease,
@@ -566,12 +575,43 @@
     }
     .proj-panel.active {
       flex: 7 1 0%;
-      background-size: auto 100%;
       border-color: rgba(255,255,255,0.15);
       box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     }
     .proj-panel:not(.active) {
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* ── MOBILE: apilado vertical ── */
+    @media (max-width: 700px) {
+      .proj-selector {
+        flex-direction: column;
+        height: auto;
+        gap: 12px;
+        background: transparent;
+        border-radius: 12px;
+        overflow: visible;
+      }
+      .proj-panel {
+        flex: none !important;
+        width: 100%;
+        height: 220px;
+        min-width: unset;
+        border-radius: 12px;
+        opacity: 1 !important;
+        transform: none !important;
+        background-size: cover !important;
+      }
+      .proj-panel.active {
+        height: 260px;
+      }
+      .proj-info-title,
+      .proj-info-desc,
+      .proj-tags-row {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .proj-panel-link { display: block !important; }
     }
     .proj-panel-shadow {
       position: absolute;
@@ -770,7 +810,7 @@
     .carousel-wrap {
       position: relative;
       width: 100%;
-      height: 480px;
+      height: 560px;
       overflow: hidden;
     }
 
@@ -958,9 +998,9 @@
 
     /* 3 órbitas con radios distintos */
     var ORBITS = [
-      { r: 200, speed: 0.22, dotSize: 48, fontSize: 13 },
-      { r: 300, speed: 0.15, dotSize: 42, fontSize: 12 },
-      { r: 390, speed: 0.10, dotSize: 36, fontSize: 11 },
+      { r: 145, speed: 0.22, dotSize: 48, fontSize: 13 },
+      { r: 225, speed: 0.15, dotSize: 42, fontSize: 12 },
+      { r: 305, speed: 0.10, dotSize: 36, fontSize: 11 },
     ];
 
     /* ángulo inicial separado por órbita para que no arranquen todos juntos */
@@ -993,11 +1033,11 @@
       var d    = orb.r * 2;
       ring.style.width    = d + 'px';
       ring.style.height   = d + 'px';
-      ring.style.bottom   = (60 - orb.r) + 'px'; /* centro en y=60 desde abajo */
+      ring.style.bottom = (-30 - orb.r) + 'px'; /* centro 30px debajo del borde */
     });
 
     function getCenter() {
-      return { cx: wrap.offsetWidth / 2, cy: wrap.offsetHeight - 60 };
+      return { cx: wrap.offsetWidth / 2, cy: wrap.offsetHeight + 30 };
     }
 
     function createNodes() {
@@ -1049,7 +1089,7 @@
           var y = c.cy + orb.r * Math.sin(rad);
 
           /* visibilidad: ocultar nodos que están debajo de la línea base */
-          var belowLine = y > c.cy + 10;
+          var belowLine = y > c.cy - 40;
           /* ángulo de "frente": arriba del arco, -90° = cima */
           var sinFromTop = -Math.sin(rad); /* 1 en la cima, -1 en el fondo */
           var brightness = Math.max(0.2, sinFromTop);
