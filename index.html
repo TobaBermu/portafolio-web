@@ -39,14 +39,14 @@
     .nav-logo { font-family:var(--serif); font-size:1.05rem; color:#fff; text-decoration:none; }
 
     #hero {
-      min-height:100vh; display:grid; grid-template-columns:1fr 1fr;
+      min-height:100vh; display:grid; grid-template-columns:1fr;
       align-items:center; padding:64px 10vw 0;
       position:relative; overflow:hidden;
     }
     .hero-fade-top { position:absolute;top:0;left:0;right:0;height:160px;background:linear-gradient(to bottom,var(--bg),transparent);pointer-events:none;z-index:3; }
     .hero-fade-bottom { position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top,var(--bg),transparent);pointer-events:none;z-index:3; }
 
-    .hero-left { position:relative; z-index:4; }
+    .hero-left { position:relative; z-index:4; max-width:600px; }
     .hero-left > * { animation:fadeSlideUp .8s ease both; }
     .hero-eyebrow { animation-delay:.2s; }
     .hero-title   { animation-delay:.35s; }
@@ -79,19 +79,6 @@
     .stat-val { font-family:var(--serif); font-size:2.2rem; line-height:1; background:linear-gradient(135deg,#a5b4fc,#fda4af); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .stat-label { font-size:0.7rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; margin-top:0.3rem; }
 
-    .hero-robot-wrap {
-      position: relative; z-index: 4;
-      display: flex; justify-content: center; align-items: center;
-      animation: fadeSlideUp .9s .3s ease both;
-      width: 100%; min-height: 540px;
-      overflow: hidden;
-    }
-    spline-viewer {
-      background: transparent !important;
-      display: block;
-    }
-    /* Ocultar el badge "Built with Spline" */
-    spline-viewer::part(logo) { display: none !important; }
     .scroll-line { position:absolute; bottom:2.5rem; left:10vw; z-index:4; display:flex; align-items:center; gap:.75rem; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,0.28); }
     .scroll-line::before { content:''; display:block; width:1px; height:48px; background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.2)); }
 
@@ -173,21 +160,21 @@
 
     @media (max-width:900px) {
       #hero { grid-template-columns:1fr; padding-top:80px; min-height:auto; padding-bottom:60px; }
-      .hero-robot-wrap { display:none !important; }
       .scroll-line { display:none; }
       .about-grid { grid-template-columns:1fr; gap:2.5rem; }
       .projects-grid { grid-template-columns:1fr; }
       .edu-grid { grid-template-columns:1fr 1fr; }
       .nav-links-wrap { display:none !important; }
       section { padding:70px 6vw; }
+      /* Skills mobile: altura proporcional */
+      .carousel-wrap { height: 460px; }
     }
     @media (max-width:550px) {
       .edu-grid { grid-template-columns:1fr; }
       footer { flex-direction:column; gap:.5rem; text-align:center; }
+      .carousel-wrap { height: 400px; }
     }
   </style>
-  <!-- Spline viewer web component -->
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
 </head>
 <body>
 
@@ -403,23 +390,6 @@
     }
   }
 
-  window.addEventListener('load', function() {
-    var sv = document.querySelector('spline-viewer');
-    if (!sv) return;
-    function patchBg() {
-      if (sv.shadowRoot) {
-        var canvas = sv.shadowRoot.querySelector('canvas');
-        if (canvas) {
-          canvas.style.background = 'transparent';
-        }
-        var inner = sv.shadowRoot.querySelector('#logo');
-        if (inner) inner.style.display = 'none';
-      }
-    }
-    patchBg();
-    setTimeout(patchBg, 1000);
-    setTimeout(patchBg, 3000);
-  });
 })();
 </script>
 
@@ -442,13 +412,6 @@
       <div><div class="stat-val">5</div><div class="stat-label">Empresas</div></div>
       <div><div class="stat-val">3</div><div class="stat-label">Proyectos</div></div>
     </div>
-  </div>
-  <div class="hero-robot-wrap" id="heroRobotWrap">
-    <spline-viewer
-      url="https://prod.spline.design/kZDDjO5HuC9GEZVY/scene.splinecode"
-      loading-anim-type="none"
-      style="width:100%;height:540px;background:transparent;"
-    ></spline-viewer>
   </div>
   <div class="scroll-line">Scroll</div>
 </section>
@@ -621,6 +584,18 @@
         opacity: 1 !important;
         transform: none !important;
       }
+      /* en mobile siempre visible en todos los paneles */
+      .proj-panel .proj-info-title,
+      .proj-panel .proj-info-desc {
+        opacity: 1 !important;
+        transform: none !important;
+        white-space: normal !important;
+      }
+      .proj-info-title { font-size: 16px !important; color: #fff !important; }
+      .proj-info-desc  { font-size: 12px !important; color: rgba(255,255,255,0.88) !important; }
+      .proj-tags-row   { opacity: 1 !important; transform: none !important; }
+      .proj-label { padding: 0 14px !important; bottom: 14px !important; }
+      .proj-icon-wrap { width: 36px !important; height: 36px !important; min-width: 36px !important; font-size: 15px !important; }
       .proj-panel-link { display: block !important; }
     }
     .proj-panel-shadow {
@@ -670,7 +645,7 @@
     }
     .proj-info-desc {
       font-size: 13px;
-      color: rgba(255,255,255,0.62);
+      color: rgba(255,255,255,0.78);
       white-space: nowrap;
       transition: opacity 0.5s ease 0.05s, transform 0.5s ease 0.05s;
       margin-top: 2px;
@@ -812,15 +787,15 @@
 </section>
 
 <div class="sec-divider"></div>
-<section id="skills" class="solid-section">
+<section id="skills" class="solid-section" style="padding-bottom:60px;">
   <p class="section-label">Conocimientos</p>
-  <h2 class="section-title">Skills Técnico</h2>
+  <h2 class="section-title" style="margin-bottom:0;">Skills Técnico</h2>
 
   <style>
     .carousel-wrap {
       position: relative;
       width: 100%;
-      height: 560px;
+      height: 520px;
       overflow: hidden;
     }
 
@@ -1008,9 +983,9 @@
 
     /* 3 órbitas con radios distintos */
     var ORBITS = [
-      { r: 145, speed: 0.22, dotSize: 48, fontSize: 13 },
-      { r: 225, speed: 0.15, dotSize: 42, fontSize: 12 },
-      { r: 305, speed: 0.10, dotSize: 36, fontSize: 11 },
+      { r: 190, speed: 0.22, dotSize: 54, fontSize: 14 },
+      { r: 290, speed: 0.15, dotSize: 46, fontSize: 13 },
+      { r: 380, speed: 0.10, dotSize: 38, fontSize: 12 },
     ];
 
     /* ángulo inicial separado por órbita para que no arranquen todos juntos */
@@ -1039,20 +1014,38 @@
 
     /* Pintar anillos */
     ORBITS.forEach(function(orb, i){
-      var ring = document.getElementById('ring'+(i+1));
-      var d    = orb.r * 2;
-      ring.style.width    = d + 'px';
-      ring.style.height   = d + 'px';
-      ring.style.bottom = (-30 - orb.r) + 'px'; /* centro 30px debajo del borde */
+      var ring  = document.getElementById('ring'+(i+1));
+      var r     = getRadius(orb.r);
+      var extra = wrap.offsetWidth < 600 ? 80 : 20;
+      var d     = r * 2;
+      ring.style.width  = d + 'px';
+      ring.style.height = d + 'px';
+      ring.style.bottom = (-r + extra) + 'px';
     });
 
     function getCenter() {
-      return { cx: wrap.offsetWidth / 2, cy: wrap.offsetHeight + 30 };
+      var extra = wrap.offsetWidth < 600 ? 80 : 20;
+      return { cx: wrap.offsetWidth / 2, cy: wrap.offsetHeight + extra };
+    }
+
+    function getRadius(baseR) {
+      /* escalar en base a la altura del wrap para que las órbitas siempre llenen verticalmente
+         radio base calibrado para wrap de 520px de alto */
+      var scale = Math.min(1.2, wrap.offsetHeight / 520);
+      return Math.round(baseR * scale);
+    }
+
+    function getDotScale() {
+      /* dots escalan con el ancho pero mínimo 55% */
+      return Math.min(1, Math.max(0.55, wrap.offsetWidth / 900));
     }
 
     function createNodes() {
+      var ds = getDotScale();
       skills.forEach(function(sk) {
         var orb = ORBITS[sk.orbit];
+        var dotSize  = Math.round(orb.dotSize  * ds);
+        var fontSize = Math.round(orb.fontSize * ds);
         var el  = document.createElement('div');
         el.className = 'car-node';
         el.style.position = 'absolute';
@@ -1060,16 +1053,16 @@
 
         var dot = document.createElement('div');
         dot.className = 'car-dot';
-        dot.style.width     = orb.dotSize + 'px';
-        dot.style.height    = orb.dotSize + 'px';
-        dot.style.fontSize  = orb.fontSize + 'px';
+        dot.style.width     = dotSize + 'px';
+        dot.style.height    = dotSize + 'px';
+        dot.style.fontSize  = fontSize + 'px';
         dot.style.borderColor = sk.color + '66';
-        dot.innerHTML = '<span style="color:' + sk.color + ';font-size:' + orb.fontSize + 'px;font-weight:700;">' + sk.icon + '</span>';
+        dot.innerHTML = '<span style="color:' + sk.color + ';font-size:' + fontSize + 'px;font-weight:700;">' + sk.icon + '</span>';
 
         var lbl = document.createElement('div');
         lbl.className   = 'car-label';
         lbl.textContent = sk.label;
-        lbl.style.fontSize = (orb.fontSize - 1) + 'px';
+        lbl.style.fontSize = Math.max(9, fontSize - 2) + 'px';
 
         el.appendChild(dot);
         el.appendChild(lbl);
@@ -1087,19 +1080,18 @@
 
       byOrbit.forEach(function(group, oi) {
         var orb   = ORBITS[oi];
+        var r     = getRadius(orb.r);
         var n     = group.length;
         var base  = orbitAngles[oi];
 
         group.forEach(function(sk, idx) {
-          /* distribuir uniformemente en 360°, rotando con el tiempo */
           var deg = (base + (idx / n) * 360) % 360;
-          var rad = (deg - 90) * Math.PI / 180; /* -90 para que 0° esté arriba */
+          var rad = (deg - 90) * Math.PI / 180;
 
-          var x = c.cx + orb.r * Math.cos(rad);
-          var y = c.cy + orb.r * Math.sin(rad);
+          var x = c.cx + r * Math.cos(rad);
+          var y = c.cy + r * Math.sin(rad);
 
-          /* visibilidad: ocultar nodos que están debajo de la línea base */
-          var belowLine = y > c.cy - 40;
+          var belowLine = y > c.cy - 10;
           /* ángulo de "frente": arriba del arco, -90° = cima */
           var sinFromTop = -Math.sin(rad); /* 1 en la cima, -1 en el fondo */
           var brightness = Math.max(0.2, sinFromTop);
@@ -1204,6 +1196,18 @@
     wrap.addEventListener('touchend',   function(){ held = false; });
     wrap.addEventListener('click', function(e){
       if (e.target === wrap || e.target === nodesWrap) clearActive();
+    });
+
+    window.addEventListener('resize', function(){
+      ORBITS.forEach(function(orb, i){
+        var ring  = document.getElementById('ring'+(i+1));
+        var r     = getRadius(orb.r);
+        var extra = wrap.offsetWidth < 600 ? 80 : 20;
+        var d     = r * 2;
+        ring.style.width  = d + 'px';
+        ring.style.height = d + 'px';
+        ring.style.bottom = (-r + extra) + 'px';
+      });
     });
 
     createNodes();
@@ -1518,39 +1522,6 @@ function toggleExp(header) {
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   function render(){px+=(tpx-px)*0.08;py+=(tpy-py)*0.08;gl.uniform1f(uTime,performance.now());gl.uniform2f(uPtr,px,1-py);gl.uniform1f(uScr,window.pageYOffset/(2*window.innerHeight));gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(render);}
   render();setTimeout(function(){neuroEl.classList.add('visible');},300);
-})();
-
-(function(){
-  var skills=[
-    {id:0,label:"HTML/CSS",cat:"dev",icon:"</>",color:"#6366f1",level:90,related:[1,2],desc:"Maquetación personalizada en Elementor, WooCommerce y Tienda Nube."},
-    {id:1,label:"WordPress",cat:"dev",icon:"W",color:"#6366f1",level:85,related:[0,2,14],desc:"Desarrollo de sitios con Elementor, custom CSS y WooCommerce."},
-    {id:2,label:"Python",cat:"dev",icon:"Py",color:"#6366f1",level:60,related:[0,9],desc:"Automatización de procesos y análisis de datos básico."},
-    {id:3,label:"Google Ads",cat:"ads",icon:"G",color:"#a78bfa",level:88,related:[4,8,9],desc:"Campañas Search, Display y Shopping con foco en ROAS."},
-    {id:4,label:"Meta Ads",cat:"ads",icon:"M",color:"#a78bfa",level:85,related:[3,8,9],desc:"Campañas en Facebook e Instagram para e-commerce."},
-    {id:5,label:"Mercado Ads",cat:"ads",icon:"MA",color:"#a78bfa",level:82,related:[3,13],desc:"Optimización de ACOS y ROI en campañas de MercadoLibre."},
-    {id:6,label:"Klaviyo",cat:"auto",icon:"K",color:"#34d399",level:92,related:[7,8,1],desc:"Flujos completos: Abandoned Cart, Win-back, Welcome Series."},
-    {id:7,label:"Email Mktg",cat:"auto",icon:"@",color:"#34d399",level:88,related:[6,10],desc:"Diseño, copy y métricas de campañas. Datatrics en Whirlpool."},
-    {id:8,label:"CRM",cat:"auto",icon:"C",color:"#34d399",level:75,related:[6,7],desc:"Segmentación de audiencias y automatización comercial."},
-    {id:9,label:"SEO / GEO",cat:"analytics",icon:"S",color:"#f59e0b",level:82,related:[3,4,11],desc:"Optimización en Tienda Nube, WooCommerce y MercadoLibre."},
-    {id:10,label:"GA4",cat:"analytics",icon:"A",color:"#f59e0b",level:78,related:[3,4,9],desc:"Reportes de conversión, audiencias y eventos personalizados."},
-    {id:11,label:"CRO",cat:"analytics",icon:"R",color:"#f59e0b",level:75,related:[9,10],desc:"Análisis de fricciones en el funnel y propuestas de mejora."},
-    {id:12,label:"Photoshop",cat:"diseño",icon:"Ps",color:"#f472b6",level:70,related:[13],desc:"Edición de imágenes y creatividades para campañas."},
-    {id:13,label:"Canva",cat:"diseño",icon:"Ca",color:"#f472b6",level:85,related:[12],desc:"Piezas para redes, email y presentaciones."},
-    {id:14,label:"Mercado Libre",cat:"marketplace",icon:"ML",color:"#60a5fa",level:90,related:[5,9,1],desc:"Cuentas oficiales, catalogación masiva y Mercado Ads."},
-    {id:15,label:"Tienda Nube",cat:"marketplace",icon:"TN",color:"#60a5fa",level:88,related:[14,1,0],desc:"Migración, rediseño y SEO/GEO en Tienda Nube."},
-    {id:16,label:"VTEX",cat:"marketplace",icon:"VX",color:"#60a5fa",level:65,related:[14,15],desc:"Gestión de catálogo y operaciones en plataforma VTEX."},
-  ];
-  var RADIUS=205,angle=0,animId=null,activeId=null;
-  var nodeEls={},dotEls={},labelEls={};
-  var nodesWrap=document.getElementById('orbNodes'),cardEl=document.getElementById('orbCard'),hintEl=document.getElementById('orbHint');
-  var N=skills.length;
-  function createNodes(){skills.forEach(function(sk){var el=document.createElement('div');el.style.cssText='position:absolute;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:74px;margin-left:-37px;margin-top:-19px;';var dot=document.createElement('div');dot.className='orb-dot';dot.style.borderColor=sk.color+'44';dot.innerHTML='<span style="font-size:11px;font-weight:600;color:'+sk.color+';line-height:1;">'+sk.icon+'</span>';var lbl=document.createElement('div');lbl.className='orb-label';lbl.textContent=sk.label;el.appendChild(dot);el.appendChild(lbl);el.addEventListener('click',function(e){e.stopPropagation();activeId===sk.id?clearActive():activateNode(sk.id);});nodesWrap.appendChild(el);nodeEls[sk.id]=el;dotEls[sk.id]=dot;labelEls[sk.id]=lbl;});}
-  function positionNodes(){skills.forEach(function(sk,i){var a=((i/N)*360+angle)%360,rad=a*Math.PI/180,x=RADIUS*Math.cos(rad),y=RADIUS*Math.sin(rad);var op=activeId!==null?1:Math.max(0.3,0.3+0.7*((1+Math.sin(rad))/2));var el=nodeEls[sk.id];el.style.left=(250+x)+'px';el.style.top=(250+y)+'px';el.style.opacity=op;el.style.zIndex=activeId===sk.id?200:Math.round(50+40*Math.cos(rad));});}
-  function activateNode(id){activeId=id;clearInterval(animId);hintEl.style.display='none';var sk=skills.find(function(s){return s.id===id;});skills.forEach(function(s){var dot=dotEls[s.id],lbl=labelEls[s.id];dot.classList.remove('active','related');lbl.classList.remove('active');dot.style.background='rgba(0,0,0,0.5)';dot.style.borderColor=s.color+'44';dot.querySelector('span').style.color=s.color;if(s.id===id){dot.classList.add('active');dot.style.background=sk.color;dot.style.borderColor=sk.color;dot.querySelector('span').style.color='#fff';lbl.classList.add('active');}else if(sk.related.indexOf(s.id)>-1){dot.classList.add('related');dot.style.borderColor='#a78bfa';}});var related=sk.related.map(function(rid){var rs=skills.find(function(s){return s.id===rid;});return rs?rs.label:'';}).filter(Boolean);cardEl.innerHTML='<div style="font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(165,180,252,0.7);margin-bottom:6px;">'+sk.cat+'</div><div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:8px;">'+sk.label+'</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div style="flex:1;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;"><div style="height:100%;border-radius:2px;background:'+sk.color+';width:'+sk.level+'%;"></div></div><span style="font-size:10px;color:rgba(255,255,255,0.5);">'+sk.level+'%</span></div><div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:10px;font-weight:300;">'+sk.desc+'</div>'+(related.length?'<div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.32);margin-bottom:5px;">Conectado con</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+related.map(function(r){return'<span style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid rgba(99,102,241,0.2);color:rgba(165,180,252,0.8);">'+r+'</span>';}).join('')+'</div>':'');var nx=parseFloat(nodeEls[id].style.left),ny=parseFloat(nodeEls[id].style.top);cardEl.style.left=(nx>250?nx-220:nx+50)+'px';cardEl.style.top=Math.max(10,Math.min(ny-40,290))+'px';cardEl.style.display='block';positionNodes();}
-  function clearActive(){activeId=null;cardEl.style.display='none';hintEl.style.display='block';skills.forEach(function(s){var dot=dotEls[s.id];dot.classList.remove('active','related');labelEls[s.id].classList.remove('active');dot.style.background='rgba(0,0,0,0.5)';dot.style.borderColor=s.color+'44';dot.querySelector('span').style.color=s.color;});startRotation();}
-  function startRotation(){clearInterval(animId);animId=setInterval(function(){angle=(angle+0.25)%360;positionNodes();},50);}
-  document.getElementById('orbWrap').addEventListener('click',function(e){if(e.target===this||e.target===nodesWrap||e.target.id==='orbStage')clearActive();});
-  createNodes();positionNodes();startRotation();
 })();
 </script>
 </body>
